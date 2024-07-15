@@ -1,0 +1,43 @@
+terraform {
+  required_providers {
+    proxmox = {
+      source = "telmate/proxmox"
+      version = "3.0.1-rc3"
+    }
+  }
+}
+
+
+provider "proxmox" {
+  pm_api_url      = "https://cerber.ionyxgroup.net:8006/api2/json"
+  pm_api_token_id = "root@pam!terraform"
+  pm_api_token_secret = "969606a5-e87d-4b43-bd76-c75e69d438f9"
+  pm_tls_insecure = true
+}
+
+resource "proxmox_vm_qemu" "vm" {
+  name        = "terraform-vm"
+  target_node = "cerber"
+
+  cores   = 2
+  sockets = 1
+  memory  = 4096
+  scsihw  = "virtio-scsi-pci"
+
+  disks {
+      ide {
+        ide0 {
+          cdrom {
+            iso = "local:iso/debian-12-netinst.iso"
+          }
+        }
+      }
+  }
+
+  network {
+    model = "virtio"
+    bridge = "vmbr0"
+  }
+
+  ssh_user = "root"
+}

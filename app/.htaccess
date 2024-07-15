@@ -1,0 +1,6 @@
+RewriteEngine On
+Options +FollowSymlinks
+
+RewriteRule	^customers$               index.php?action=list	[L]
+
+RewriteRule	^customers/(.*)$               index.php?action=details&cid=$1      [QSA,L]

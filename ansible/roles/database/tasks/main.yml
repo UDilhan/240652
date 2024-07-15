@@ -1,0 +1,27 @@
+---
+- name: Clone the application
+  git:
+   repo: https://github.com/UDilhan/240652.git
+   dest: /tmp/240652
+   clone: yes
+   update: yes
+
+- name: Pull MariaDB image from Docker Hub
+  docker_image:
+   name: mariadb
+   tag: latest
+   source: pull
+
+- name: Run MariaDB container
+  docker_container:
+   name: mariadb
+   image: mariadb:latest
+   state: started
+   restart_policy: always
+   env:
+    MYSQL_ROOT_PASSWORD: main01
+   ports:
+    - "3306:3306"
+   volumes:
+    - /var/lib/mysql:/var/lib/mysql
+    - /tmp/240652/database/database.sql:/docker-entrypoint-initdb.d/sqlfile.sql

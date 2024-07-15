@@ -1,0 +1,34 @@
+---
+- name: Check that the application is not already installed
+  stat:
+    path: /var/www/html/index.php
+  register: application_installed
+
+- name: Application installation
+  block:
+   - name: Clone the application
+     git:
+      repo: https://github.com/UDilhan/240652.git
+      dest: /root/240652
+      clone: yes
+      update: yes
+
+   - name: Build the application
+     community.docker.docker_image_build:
+      name: my_php_app:latest
+      path: /root/240652/app
+      dockerfile: Dockerfile
+
+   - name: Ensure a container is running
+     docker_container:
+      name: my_php_app
+      state: started
+      image: "my_php_app:latest"
+      ports:
+       - "80:80"
+      env:
+       DB_HOST: "10.200.225.2"
+       DB_USER: root
+       DB_PASS: main01
+       DB_NAME: app
+  when: not application_installed.stat.exists

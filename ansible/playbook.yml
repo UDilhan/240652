@@ -1,0 +1,19 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: no
+  roles:
+   - common
+   - docker
+
+- hosts: webserver
+  become: yes
+  gather_facts: no
+  roles:
+   - webserver
+
+- hosts: database
+  become: yes
+  gather_facts: no
+  roles:
+   - database

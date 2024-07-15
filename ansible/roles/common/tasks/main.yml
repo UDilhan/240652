@@ -1,0 +1,17 @@
+---
+- name: Packages update (1/2)
+  apt:
+   update_cache: yes
+  changed_when: false
+
+- name: Packages update (2/2)
+  apt:
+   upgrade: dist
+
+- name: Install dependencies
+  apt:
+   name: "{{ item }}"
+   state: present
+  with_items:
+   - git
+   - curl
